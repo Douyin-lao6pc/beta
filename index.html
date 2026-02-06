@@ -318,12 +318,12 @@
                 if (isLoginValid) {
                     btnHtml = `
                         <a href="${downloadUrl}" target="_blank">
-                            <button class="download-btn">下载</button>
+                            <button class="download-btn">查看</button>
                         </a>
                     `;
                 } else {
                     // 未登录/权限过期：无a链接，仅禁用按钮
-                    btnHtml = '<button class="download-btn" disabled>下载</button>';
+                    btnHtml = '<button class="download-btn" disabled>请先登录</button>';
                 }
 
                 item.innerHTML = `
