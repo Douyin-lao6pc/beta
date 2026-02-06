@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>团队内测中心</title>
+    <link rel="icon" href="icon.ico" type="image/x-icon">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        .toolbar {
+            width: 100%;
+            height: 60px;
+            background-color: #2d3748;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 999;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        /* 新增：工具条左、中、右容器样式，保证logo居中 */
+        .toolbar-left {
+            display: flex;
+            align-items: center;
+        }
+        .toolbar-center {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+        }
+        /* 新增：logo样式，固定200*48尺寸 */
+        .logo-img {
+            width: 200px;
+            height: 48px;
+            object-fit: contain; /* 防止logo变形，保持原有比例 */
+        }
+        .toolbar-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .toolbar .title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .login-btn {
+            padding: 6px 16px;
+            background-color: #4299e1;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+        .login-btn:hover {
+            background-color: #3182ce;
+        }
+        .user-info {
+            font-size: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        .user-info:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+        .content {
+            margin-top: 80px;
+            padding: 0 20px 20px;
+        }
+        .item {
+            width: 100%;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            background-color: #fff;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .item-text {
+            font-size: 15px;
+        }
+        .download-btn {
+            padding: 6px 16px;
+            background-color: #38b2ac;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+        .download-btn:disabled {
+            background-color: #a0aec0;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        .login-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        .modal-content {
+            width: 350px;
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 24px;
+        }
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .form-item {
+            margin-bottom: 16px;
+        }
+        .form-item label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 6px;
+            color: #4a5568;
+        }
+        .form-item input {
+            width: 100%;
+            height: 40px;
+            padding: 0 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .form-item input:focus {
+            outline: none;
+            border-color: #4299e1;
+            box-shadow: 0 0 0 2px rgba(66,153,225,0.2);
+        }
+        .submit-btn {
+            width: 100%;
+            height: 40px;
+            background-color: #4299e1;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .submit-btn:hover {
+            background-color: #3182ce;
+        }
+    </style>
+</head>
+<body>
+    <!-- 工具条修改为左、中、右三部分，中间加logo -->
+    <div class="toolbar">
+        <div class="toolbar-left">
+            <div class="title">团队内测中心</div>
+        </div>
+        <div class="toolbar-center">
+            <!-- 中间logo：200*48，logo.png和html同目录 -->
+            <img src="logo.png" alt="团队logo" class="logo-img">
+        </div>
+        <div class="toolbar-right" id="rightArea"></div>
+    </div>
+
+    <div class="content" id="content"></div>
+
+    <div class="login-modal" id="loginModal">
+        <div class="modal-content">
+            <div class="modal-title">用户登录</div>
+            <div class="form-item">
+                <label for="username">用户名</label>
+                <input type="text" id="username" placeholder="请输入内测用户名">
+            </div>
+            <div class="form-item">
+                <label for="password">密码</label>
+                <input type="password" id="password" placeholder="请输入内测密码">
+            </div>
+            <button class="submit-btn" id="submitLogin">登录</button>
+        </div>
+    </div>
+
+    <script>
+        /************************** 可配置区域 **************************/
+        const USER_LIST = [
+            { username: "douyin_lao6pc", password: "lao6pc", expireTime: "2999/12/31" },
+            { username: "douyin_xiyun", password: "asdfghjkl;'", expireTime: "2999/12/31" },
+            { username: "long", password: "asdfghjkl;'", expireTime: "2999/12/31" },
+            { username: "lao6osdevelopment", password: "lao6osdevelopment", expireTime: "2999/12/31" }
+        ];
+
+        const CONTENT_LIST = [
+            "lao6 电脑壁纸站",
+            "无",
+            "无",
+            "无",
+            "无",
+            "无",
+            "无",
+            "无",
+            "无",
+            "无"
+        ];
+
+        const DOWNLOAD_URL_LIST = [
+            "https://douyin-lao6pc.github.io/wallpaper",
+            "#",
+            "#",
+            "#",
+            "#",
+            "#",
+            "#",
+            "#",
+            "#",
+            "https://www.xxx.com/tool10.zip"
+        ];
+
+        const DEFAULT_DOWNLOAD_URL = "#";
+        /************************************************************************************/
+
+        const rightArea = document.getElementById('rightArea');
+        const content = document.getElementById('content');
+        const loginModal = document.getElementById('loginModal');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const submitLogin = document.getElementById('submitLogin');
+
+        window.onload = function() {
+            checkLoginStatus();
+            renderContent();
+        };
+
+        function checkLoginStatus() {
+            const loginUser = JSON.parse(localStorage.getItem('loginUser'));
+            if (loginUser) {
+                const now = new Date();
+                const expireDate = new Date(loginUser.expireTime);
+                if (now > expireDate) {
+                    localStorage.removeItem('loginUser');
+                    alert('登录过期或内测权限已过期');
+                    renderLoginBtn();
+                } else {
+                    renderUserInfo(loginUser);
+                }
+            } else {
+                renderLoginBtn();
+            }
+        }
+
+        function renderLoginBtn() {
+            rightArea.innerHTML = '<button class="login-btn" id="loginBtn">登录</button>';
+            document.getElementById('loginBtn').onclick = function() {
+                loginModal.style.display = 'flex';
+                usernameInput.value = '';
+                passwordInput.value = '';
+            };
+        }
+
+        function renderUserInfo(user) {
+            rightArea.innerHTML = `
+                <div class="user-info" id="userInfo">
+                    <span>内测用户：${user.username}</span>
+                    <span>内测权限过期时间：${user.expireTime}</span>
+                </div>
+            `;
+            document.getElementById('userInfo').onclick = function() {
+                if (confirm('是否确认退出登录？')) {
+                    localStorage.removeItem('loginUser');
+                    renderLoginBtn();
+                    renderContent();
+                }
+            };
+        }
+
+        // 核心修复的renderContent函数
+        function renderContent() {
+            content.innerHTML = '';
+            const loginUser = JSON.parse(localStorage.getItem('loginUser'));
+            const isLoginValid = loginUser && new Date() < new Date(loginUser.expireTime);
+            
+            CONTENT_LIST.forEach((text, index) => {
+                const item = document.createElement('div');
+                item.className = 'item';
+                const downloadUrl = DOWNLOAD_URL_LIST[index] || DEFAULT_DOWNLOAD_URL;
+                let btnHtml = '';
+
+                // 已登录且权限有效：保留a链接+可点击按钮
+                if (isLoginValid) {
+                    btnHtml = `
+                        <a href="${downloadUrl}" target="_blank">
+                            <button class="download-btn">下载</button>
+                        </a>
+                    `;
+                } else {
+                    // 未登录/权限过期：无a链接，仅禁用按钮
+                    btnHtml = '<button class="download-btn" disabled>下载</button>';
+                }
+
+                item.innerHTML = `
+                    <div class="item-text">${text}</div>
+                    ${btnHtml}
+                `;
+                content.appendChild(item);
+            });
+        }
+
+        submitLogin.onclick = function() {
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value.trim();
+            if (!username || !password) {
+                alert('请输入用户名和密码');
+                return;
+            }
+            const user = USER_LIST.find(item => item.username === username && item.password === password);
+            if (user) {
+                const now = new Date();
+                const expireDate = new Date(user.expireTime);
+                if (now > expireDate) {
+                    alert('用户名密码错误或内测权限已过期');
+                    return;
+                }
+                localStorage.setItem('loginUser', JSON.stringify(user));
+                loginModal.style.display = 'none';
+                renderUserInfo(user);
+                renderContent();
+            } else {
+                alert('用户名密码错误或内测权限已过期');
+            }
+        };
+
+        window.onclick = function(e) {
+            if (e.target === loginModal) {
+                loginModal.style.display = 'none';
+            }
+        };
+    </script>
+</body>
+</html>
