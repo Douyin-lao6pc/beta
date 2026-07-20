@@ -1,101 +1,416 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>登录验证</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lao6 OS 内测频道</title>
     <style>
+        /* ========== 全局重置 ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: "Microsoft YaHei", sans-serif;
-            background: #f0f2f5;
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+            background: #0b0e14;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
+            padding: 20px;
+            color: #e4e7ed;
         }
-        .login-box {
-            background: white;
-            padding: 40px 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
-            width: 320px;
+
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            background: #1a1f2b;
+            border-radius: 16px;
+            padding: 30px 28px 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+            border: 1px solid #2d3545;
+            min-height: 500px;
+            position: relative;
+        }
+
+        /* ========== 页面切换 ========== */
+        .page {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ========== 登录界面 ========== */
+        #loginPage {
+            max-width: 420px;
+            margin: 40px auto 20px;
             text-align: center;
         }
-        h2 { margin-bottom: 24px; color: #333; }
-        .input-group {
-            margin-bottom: 16px;
+
+        #loginPage .logo {
+            font-size: 48px;
+            margin-bottom: 8px;
+        }
+        #loginPage h1 {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00c8ff, #7b61ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+        }
+        #loginPage .sub {
+            font-size: 14px;
+            color: #8892a8;
+            margin-bottom: 30px;
+            -webkit-text-fill-color: #8892a8;
+        }
+
+        .login-box {
+            background: #131824;
+            padding: 32px 28px 28px;
+            border-radius: 12px;
+            border: 1px solid #2a3244;
             text-align: left;
         }
-        .input-group label {
+        .login-box .field {
+            margin-bottom: 16px;
+        }
+        .login-box label {
             display: block;
-            font-size: 14px;
-            color: #555;
+            font-size: 13px;
+            color: #b6c0d0;
             margin-bottom: 4px;
+            font-weight: 500;
         }
-        .input-group input {
+        .login-box input {
             width: 100%;
-            padding: 8px 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            background: #0b0e14;
+            border: 1px solid #2d3545;
+            color: #e4e7ed;
+            padding: 10px 14px;
+            border-radius: 6px;
             font-size: 14px;
-            box-sizing: border-box;
+            transition: border-color 0.2s;
         }
-        .input-group input:focus {
+        .login-box input:focus {
             outline: none;
-            border-color: #1890ff;
-            box-shadow: 0 0 0 2px rgba(24,144,255,0.2);
+            border-color: #4a6cf7;
         }
-        button {
+
+        .login-box .login-btn {
             width: 100%;
-            padding: 10px;
-            background: #1890ff;
-            color: white;
+            background: #4a6cf7;
+            color: #fff;
             border: none;
-            border-radius: 4px;
+            padding: 12px;
+            border-radius: 6px;
             font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: background 0.2s;
+            margin-top: 6px;
         }
-        button:hover { background: #40a9ff; }
-        button:disabled {
-            background: #d9d9d9;
+        .login-box .login-btn:hover {
+            background: #5f7ef8;
+        }
+        .login-box .login-btn:disabled {
+            opacity: 0.5;
             cursor: not-allowed;
         }
-        #message {
-            margin-top: 16px;
-            font-size: 14px;
-            color: #ff4d4f;
-            min-height: 20px;
-        }
-        .info {
+
+        .login-status {
+            display: block;
             margin-top: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+            min-height: 22px;
+        }
+        .login-status.success {
+            color: #5cd68b;
+        }
+        .login-status.error {
+            color: #f56c6c;
+        }
+        .login-status.loading {
+            color: #f5c542;
+        }
+
+        /* ========== 内测列表界面 ========== */
+        #dashboardPage .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #2d3545;
+            margin-bottom: 20px;
+        }
+        #dashboardPage .header h2 {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00c8ff, #7b61ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        #dashboardPage .header .user-info {
+            font-size: 13px;
+            color: #8892a8;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        #dashboardPage .header .user-info .logout-btn {
+            background: #2d3545;
+            border: none;
+            color: #e4e7ed;
+            padding: 4px 14px;
+            border-radius: 4px;
             font-size: 12px;
-            color: #999;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        #dashboardPage .header .user-info .logout-btn:hover {
+            background: #f56c6c;
+        }
+
+        /* 下载按钮 */
+        .download-section {
+            text-align: center;
+            margin: 12px 0 24px;
+        }
+        .download-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #f7b731, #f5a623);
+            color: #1a1f2b;
+            padding: 12px 44px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: 700;
+            text-decoration: none;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 16px rgba(245, 166, 35, 0.3);
+            transition: transform 0.15s, box-shadow 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(245, 166, 35, 0.45);
+        }
+
+        /* 表格 */
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 10px;
+            border: 1px solid #2a3244;
+            background: #131824;
+            margin-top: 4px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            min-width: 680px;
+        }
+        thead {
+            background: #0b0e14;
+        }
+        th {
+            text-align: left;
+            padding: 12px 14px;
+            color: #a8b2c8;
+            font-weight: 600;
+            font-size: 13px;
+            border-bottom: 2px solid #2a3244;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+        td {
+            padding: 10px 14px;
+            border-bottom: 1px solid #1e2636;
+            vertical-align: middle;
+            color: #e4e7ed;
+        }
+        tr:hover td {
+            background: #1c2332;
+        }
+
+        /* 状态标签：1=正在内测(绿) 2=已结束(灰) 3=已公开(蓝) */
+        .badge {
+            display: inline-block;
+            padding: 2px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .badge.status-1 {
+            background: #5cd68b33;
+            color: #5cd68b;
+            border: 1px solid #5cd68b66;
+        }
+        .badge.status-2 {
+            background: #6a7a9633;
+            color: #8892a8;
+            border: 1px solid #6a7a9666;
+        }
+        .badge.status-3 {
+            background: #4a6cf733;
+            color: #4a6cf7;
+            border: 1px solid #4a6cf766;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #4a5568;
+        }
+
+        .row-count {
+            font-size: 12px;
+            color: #4a5568;
+        }
+
+        /* 响应式 */
+        @media (max-width: 700px) {
+            .container {
+                padding: 16px 12px;
+            }
+            #loginPage {
+                margin: 20px auto;
+            }
+            #dashboardPage .header {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+            #dashboardPage .header .user-info {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            .download-btn {
+                font-size: 15px;
+                padding: 10px 24px;
+            }
         }
     </style>
 </head>
 <body>
 
-<div class="login-box">
-    <h2>🔐 登录验证</h2>
-    <div class="input-group">
-        <label>用户名</label>
-        <input type="text" id="username" placeholder="请输入用户名">
+<div class="container">
+    <!-- ================================================================ -->
+    <!-- 页面一：登录界面 -->
+    <!-- ================================================================ -->
+    <div class="page active" id="loginPage">
+        <div class="logo">🚀</div>
+        <h1>lao6 OS 开发团队</h1>
+        <div class="sub">内测频道 · 请验证身份</div>
+
+        <div class="login-box">
+            <div class="field">
+                <label>👤 用户名</label>
+                <input type="text" id="username" placeholder="请输入用户名" />
+            </div>
+            <div class="field">
+                <label>🔑 密码</label>
+                <input type="password" id="password" placeholder="请输入密码" />
+            </div>
+            <button class="login-btn" id="loginBtn">登 录</button>
+            <span class="login-status" id="loginStatus">请输入用户名和密码</span>
+        </div>
     </div>
-    <div class="input-group">
-        <label>密码</label>
-        <input type="password" id="password" placeholder="请输入密码">
+
+    <!-- ================================================================ -->
+    <!-- 页面二：内测列表界面（登录后显示） -->
+    <!-- ================================================================ -->
+    <div class="page" id="dashboardPage">
+
+        <!-- 顶部 -->
+        <div class="header">
+            <h2>🚀 lao6 OS 内测频道</h2>
+            <div class="user-info">
+                <span id="displayUsername">👤 用户</span>
+                <button class="logout-btn" id="logoutBtn">退出登录</button>
+            </div>
+        </div>
+
+        <!-- 下载按钮 -->
+        <div class="download-section">
+            <button class="download-btn" id="downloadBtn">
+                ⬇️ 前往内测资源下载
+            </button>
+        </div>
+
+        <!-- 表格：产品列表 -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:6px;">
+            <span style="font-weight:600; color:#b6c0d0; font-size:15px;">📋 内测产品列表</span>
+            <span class="row-count">共 <span id="rowCount">0</span> 项</span>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:20px;">#</th>
+                        <th>产品名称</th>
+                        <th style="width:100px;">状态</th>
+                        <th style="width:110px;">内测时间</th>
+                        <th style="width:130px;">参与通道</th>
+                        <th>备注</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- 动态渲染 -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="footer">lao6 OS 开发团队 2024-2026</div>
     </div>
-    <button id="loginBtn">登 录</button>
-    <div id="message"></div>
-    <div class="info">如果忘记密码请在抖音内测群联系</div>
 </div>
 
 <script>
-    // ============================================================
-    //  使用 Web Crypto API 计算 SHA256（十六进制小写）
-    // ============================================================
+    // ================================================================
+    //  ★★★ 在这里修改表格数据 ★★★
+    //  状态：1=正在内测，2=已结束，3=已公开
+    //  格式：{ name: '产品名称', status: 1|2|3, time: '日期', link: '通道', note: '备注' }
+    // ================================================================
+    const tableData = [
+        { name: 'lao6-PE 1.6', status: 1, time: '2026/07/13-2026/07/22', link: 'Windows平台用户', note: '-' },
+        { name: 'lao6-PE 1.6 International Edition', status: 1, time: '2026/07/11-2026/07/22', link: 'lao6 OS Software Beta', note: 'Please download in the lao6 OS system update page' },
+        // ★ 在这里添加或删除行，保存文件后刷新页面即可
+    ];
+
+    // ================================================================
+    //  状态映射（1=正在内测 2=已结束 3=已公开）
+    // ================================================================
+    const statusMap = {
+        1: { label: '🟢 正在内测', cls: 'status-1' },
+        2: { label: '⚪ 已结束', cls: 'status-2' },
+        3: { label: '🔵 已公开', cls: 'status-3' },
+    };
+
+    // ================================================================
+    //  1. SHA256 哈希（Web Crypto）
+    // ================================================================
     async function sha256Hex(message) {
         const encoder = new TextEncoder();
         const data = encoder.encode(message);
@@ -104,11 +419,10 @@
         return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
     }
 
-    // ============================================================
-    //  解析 password.txt 内容，提取 username 和 pwd
-    // ============================================================
+    // ================================================================
+    //  2. 解析 password.txt
+    // ================================================================
     function parseAuthFile(content) {
-        // 格式：username="xxx",pwd="hash",passage=winsoftware
         const userMatch = content.match(/username="([^"]*)"/);
         const pwdMatch = content.match(/pwd="([^"]*)"/);
         if (userMatch && pwdMatch) {
@@ -117,15 +431,132 @@
         return null;
     }
 
-    // ============================================================
-    //  主登录逻辑
-    // ============================================================
+    // ================================================================
+    //  3. 页面切换
+    // ================================================================
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+    }
+
+    // ================================================================
+    //  4. 渲染表格
+    // ================================================================
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    function renderTable() {
+        const tbody = document.getElementById('tableBody');
+        if (!tbody) return;
+
+        if (tableData.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#4a5568;padding:30px 0;">暂无内测产品</td></tr>`;
+            document.getElementById('rowCount').textContent = 0;
+            return;
+        }
+
+        let html = '';
+        tableData.forEach((item, idx) => {
+            const st = statusMap[item.status] || statusMap[1];
+            html += `<tr>
+                <td style="color:#4a5568;">${idx + 1}</td>
+                <td><strong>${escapeHtml(item.name)}</strong></td>
+                <td><span class="badge ${st.cls}">${st.label}</span></td>
+                <td>${escapeHtml(item.time || '—')}</td>
+                <td>${escapeHtml(item.link || '—')}</td>
+                <td>${escapeHtml(item.note || '')}</td>
+            </tr>`;
+        });
+        tbody.innerHTML = html;
+        document.getElementById('rowCount').textContent = tableData.length;
+    }
+
+    // ================================================================
+    //  5. 登录逻辑
+    // ================================================================
     const loginBtn = document.getElementById('loginBtn');
-    const messageEl = document.getElementById('message');
+    const loginStatus = document.getElementById('loginStatus');
     const usernameInput = document.getElementById('username');
     const passwordInput = document.getElementById('password');
+    const displayUsername = document.getElementById('displayUsername');
+    const downloadBtn = document.getElementById('downloadBtn');
 
-    // 回车键触发登录
+    // 检查是否已登录
+    function checkLoggedIn() {
+        const saved = localStorage.getItem('lao6_logged_in');
+        if (saved === 'true') {
+            const user = localStorage.getItem('lao6_username') || '用户';
+            displayUsername.textContent = '👤 ' + user;
+            showPage('dashboardPage');
+            renderTable();
+            return true;
+        }
+        return false;
+    }
+
+    if (checkLoggedIn()) {
+        usernameInput.value = localStorage.getItem('lao6_username') || '';
+    }
+
+    loginBtn.addEventListener('click', async () => {
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value;
+
+        if (!username) {
+            loginStatus.textContent = '⚠️ 请输入用户名';
+            loginStatus.className = 'login-status error';
+            return;
+        }
+        if (!password) {
+            loginStatus.textContent = '⚠️ 请输入密码';
+            loginStatus.className = 'login-status error';
+            return;
+        }
+
+        loginStatus.textContent = '⏳ 验证中...';
+        loginStatus.className = 'login-status loading';
+        loginBtn.disabled = true;
+
+        try {
+            const response = await fetch('password.txt');
+            if (!response.ok) {
+                throw new Error('无法获取 password.txt（状态码 ' + response.status + '）');
+            }
+            const content = await response.text();
+            const parsed = parseAuthFile(content);
+            if (!parsed) {
+                throw new Error('password.txt 格式错误');
+            }
+
+            const inputHash = await sha256Hex(password);
+
+            if (username === parsed.username && inputHash === parsed.pwdHash) {
+                loginStatus.textContent = '✅ 验证通过！';
+                loginStatus.className = 'login-status success';
+                localStorage.setItem('lao6_logged_in', 'true');
+                localStorage.setItem('lao6_username', username);
+                displayUsername.textContent = '👤 ' + username;
+                showPage('dashboardPage');
+                renderTable();
+            } else {
+                loginStatus.textContent = '❌ 用户名或密码错误';
+                loginStatus.className = 'login-status error';
+                localStorage.removeItem('lao6_logged_in');
+            }
+        } catch (error) {
+            loginStatus.textContent = '⚠️ ' + error.message;
+            loginStatus.className = 'login-status error';
+            localStorage.removeItem('lao6_logged_in');
+        }
+
+        loginBtn.disabled = false;
+    });
+
+    // 回车登录
     passwordInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') loginBtn.click();
     });
@@ -133,59 +564,38 @@
         if (e.key === 'Enter') loginBtn.click();
     });
 
-    loginBtn.addEventListener('click', async () => {
-        const username = usernameInput.value.trim();
-        const password = passwordInput.value;
-
-        // 简单校验
-        if (!username) {
-            messageEl.textContent = '⚠️ 请输入用户名';
-            return;
-        }
-        if (!password) {
-            messageEl.textContent = '⚠️ 请输入密码';
-            return;
-        }
-
-        messageEl.textContent = '⏳ 正在验证...';
-        loginBtn.disabled = true;
-
-        try {
-            // 1. 获取 password.txt（同目录）
-            //   如果部署在 GitHub Pages，且 index.html 与 password.txt 同目录，
-            //   则直接使用相对路径。
-            const response = await fetch('password.txt');
-            if (!response.ok) {
-                throw new Error('无法获取 password.txt（状态码：' + response.status + '）');
-            }
-            const content = await response.text();
-
-            // 2. 解析文件
-            const parsed = parseAuthFile(content);
-            if (!parsed) {
-                throw new Error('password.txt 格式错误，请检查 username 和 pwd 字段');
-            }
-
-            // 3. 计算输入密码的哈希
-            const inputHash = await sha256Hex(password);
-
-            // 4. 比对
-            if (username === parsed.username && inputHash === parsed.pwdHash) {
-                messageEl.style.color = '#52c41a';
-                messageEl.textContent = '✅ 验证通过，正在跳转...';
-                // 跳转到 page.html（同目录）
-                window.location.href = 'page.html';
-            } else {
-                messageEl.style.color = '#ff4d4f';
-                messageEl.textContent = '❌ 用户名或密码错误';
-                loginBtn.disabled = false;
-            }
-        } catch (error) {
-            messageEl.style.color = '#ff4d4f';
-            messageEl.textContent = '⚠️ ' + error.message;
-            loginBtn.disabled = false;
+    // ================================================================
+    //  6. 退出登录
+    // ================================================================
+    document.getElementById('logoutBtn').addEventListener('click', function () {
+        if (confirm('确定要退出登录吗？')) {
+            localStorage.removeItem('lao6_logged_in');
+            localStorage.removeItem('lao6_username');
+            showPage('loginPage');
+            loginStatus.textContent = '已退出，请重新登录';
+            loginStatus.className = 'login-status';
+            usernameInput.value = '';
+            passwordInput.value = '';
         }
     });
+
+    // ================================================================
+    //  7. 下载按钮
+    // ================================================================
+    downloadBtn.addEventListener('click', function () {
+        window.open('https://1812019632.share.123pan.cn/123pan/AH3rVv-ihvrh?pwd=ng8U', '_blank');
+    });
+
+    // ================================================================
+    //  8. 恢复用户名
+    // ================================================================
+    const savedUser = localStorage.getItem('lao6_username');
+    if (savedUser && !localStorage.getItem('lao6_logged_in')) {
+        usernameInput.value = savedUser;
+    }
+
+    console.log('✅ lao6 OS 内测面板加载完成');
+    console.log('📋 当前数据：', tableData);
 </script>
 
 </body>
