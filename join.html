@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>lao6 OS Development Team Beta </title>
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.8;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border: 1px solid #eee;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease;
+            flex: 1;
+            flex-direction: column;
+        }
+        .page.active {
+            display: flex;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e5e9ef;
+        }
+        .header h1 {
+            font-size: 24px;
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .header .version {
+            font-size: 14px;
+            color: #718096;
+        }
+        .header .producer {
+            font-size: 13px;
+            color: #a0aec0;
+            margin-top: 5px;
+        }
+        .terms-list {
+            margin: 30px 0;
+            flex: 1;
+        }
+        .terms-list li {
+            margin-bottom: 20px;
+            padding-left: 25px;
+            position: relative;
+            list-style: none;
+        }
+        .terms-list li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #4299e1;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .highlight {
+            color: #e53e3e;
+            font-weight: 500;
+        }
+        .agree-area {
+            margin: 20px 0 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .agree-area input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        .agree-area label {
+            font-size: 15px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .btn {
+            background: #4299e1;
+            color: #fff;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-weight: 600;
+        }
+        .btn:hover:not(:disabled) {
+            background: #3182ce;
+        }
+        .btn:disabled {
+            background: #a0aec0;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        .btn-success {
+            background: #48bb78;
+        }
+        .btn-success:hover:not(:disabled) {
+            background: #38a169;
+        }
+        .btn-warning {
+            background: #ed8936;
+        }
+        .btn-warning:hover:not(:disabled) {
+            background: #dd6b20;
+        }
+        .btn-center {
+            text-align: center;
+            margin-top: 10px;
+        }
+        .countdown {
+            font-size: 14px;
+            color: #e53e3e;
+            margin-left: 6px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #2d3748;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #cbd5e0;
+            border-radius: 6px;
+            font-size: 15px;
+            transition: border-color 0.2s;
+            background: #fff;
+        }
+        .form-group select {
+            appearance: auto;
+            cursor: pointer;
+        }
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66,153,225,0.2);
+        }
+        .form-group .hint {
+            font-size: 13px;
+            color: #718096;
+            margin-top: 3px;
+        }
+        .form-group .error {
+            color: #e53e3e;
+            font-size: 14px;
+            margin-top: 3px;
+        }
+        .param-box {
+            background: #edf2f7;
+            padding: 18px 20px;
+            border-radius: 6px;
+            font-family: Consolas, monospace;
+            font-size: 15px;
+            word-break: break-all;
+            border: 1px dashed #a0aec0;
+            margin: 15px 0 20px;
+            position: relative;
+        }
+        .param-box .copy-btn {
+            display: inline-block;
+            background: #4299e1;
+            color: #fff;
+            border: none;
+            padding: 6px 20px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 12px;
+        }
+        .param-box .copy-btn:hover {
+            background: #3182ce;
+        }
+        .info-text {
+            font-size: 16px;
+            color: #2d3748;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .info-text strong {
+            color: #e53e3e;
+        }
+        .welcome-box {
+            text-align: center;
+            padding: 30px 0;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .welcome-box .emoji-big {
+            font-size: 72px;
+            margin-bottom: 20px;
+        }
+        .welcome-box h2 {
+            font-size: 30px;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+        .welcome-box p {
+            font-size: 20px;
+            color: #4a5568;
+            margin-bottom: 30px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 1px solid #e5e9ef;
+            font-size: 13px;
+            color: #718096;
+        }
+
+        /* ===== 语言选择页面 ===== */
+        .lang-selection {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+        }
+        .lang-selection .lang-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: #2d3748;
+        }
+        .lang-selection .lang-buttons {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .lang-btn {
+            background: #edf2f7;
+            border: 2px solid #cbd5e0;
+            border-radius: 12px;
+            padding: 20px 40px;
+            font-size: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 150px;
+            color: #2d3748;
+        }
+        .lang-btn:hover {
+            border-color: #4299e1;
+            background: #e2e8f0;
+            transform: scale(1.03);
+        }
+
+        .lang-hint {
+            margin-top: 40px;
+            font-size: 18px;
+            color: #e53e3e;
+            background: #fff5f5;
+            padding: 20px 30px;
+            border-radius: 8px;
+            border: 1px solid #feb2b2;
+            text-align: center;
+            max-width: 600px;
+        }
+        .lang-hint .back-btn {
+            display: inline-block;
+            margin-top: 16px;
+            background: #4299e1;
+            color: #fff;
+            padding: 8px 24px;
+            border-radius: 6px;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .lang-hint .back-btn:hover {
+            background: #3182ce;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 25px 15px; }
+            .header h1 { font-size: 20px; }
+            .terms-list li { padding-left: 20px; }
+            .param-box { font-size: 13px; padding: 14px 16px; }
+            .welcome-box h2 { font-size: 24px; }
+            .welcome-box p { font-size: 17px; }
+            .agree-area { flex-direction: column; gap: 8px; }
+            .lang-buttons { flex-direction: column; gap: 15px; }
+            .lang-btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div class="page active" id="pageLanguage">
+        <div class="header">
+            <h1>🌐 选择语言 / Select Language</h1>
+            <div class="version">请选择您的语言</div>
+        </div>
+        <div class="lang-selection">
+            <div class="lang-buttons">
+                <button class="lang-btn" id="langZh">简体中文</button>
+                <button class="lang-btn" id="langEn">English</button>
+            </div>
+            <div id="langHint" class="lang-hint" style="display:none;">
+                <div>⚠️ lao6 OS user please to <strong>lao6os.com/betajoin</strong> register beta account.</div>
+                <button class="back-btn" id="backToLang">Back to select language</button>
+            </div>
+        </div>
+        <div class="footer">
+            <div>lao6 OS Development Team 2024-2026</div>
+        </div>
+    </div>
+
+    <div class="page" id="pageLicense">
+        <div class="header">
+            <h1>lao6 OS 开发团队 软件许可条款</h1>
+            <div class="version">许可版本：2.0-20250527</div>
+            <div class="producer">受许可条款的软件：所有 | 监制与共同编制：Microsoft Corporation</div>
+        </div>
+        <div class="terms-list">
+            <ul>
+                <li>不得对软件进行反向工程、反编译、反汇编；尽管由此限制，但如果法律明示允许上述活动，并仅在法律明示允许下从事上述活动则不限制。 
+                <li>您可以制作该软件的一个副本，仅可用于重新安装该软件，但绝不允许更改任何许可条款内容。</li>
+                <li>该软件按"原样"提供，我们为其提供大部分支持服务。</li>
+                <li>本协议以及您的补充、反馈和其他许可条款，共同构成了该程序的完整协议。</li>
+                <li>本协议规定了部分法律权利。根据您所在国家/地区的法律规定，您可能享有其他权利。您还可能享有与您的软件提供方相关的权利。若您所在国家/地区的法律不允许本协议改变您所在国家/地区法律赋予您的权利，则本协议将不改变您按照所在国家/地区的法律应享有的权利。</li>
+                <li>该软件按“原样”授予许可。您自行承担所有使用风险。lao6 OS开发团队不提供任何明示的担保、保证或条件。用户可享有其所在地法律赋予的本协议无法变更的其他消费者权利。</li>
+            </ul>
+        </div>
+        <!-- 同意区域 - 居中 -->
+        <div class="agree-area">
+            <input type="checkbox" id="agreeCheck">
+            <label for="agreeCheck">我同意以上许可条款</label>
+        </div>
+        <div class="btn-center">
+            <button class="btn" id="nextToRegisterBtn" disabled>
+                下一步 <span id="countdownDisplay">（10s）</span>
+            </button>
+        </div>
+        <div class="footer">
+            <div class="copyright">版权所有 © lao6 OS开发团队 & Microsoft Corporation</div>
+            <div>本许可条款受 Microsoft Corporation 管辖（若适用）</div>
+        </div>
+    </div>
+
+    <div class="page" id="pageRegister">
+        <div class="header">
+            <h1>🔐 新用户注册</h1>
+            <div class="version">设置您的内测账号</div>
+        </div>
+        <div style="flex:1;">
+            <div class="form-group">
+                <label for="regUsername">用户名</label>
+                <input type="text" id="regUsername" placeholder="请输入用户名（字母或数字，建议英文）" />
+                <div class="hint">用户名不能重复，请谨慎选择</div>
+                <div class="error" id="usernameError"></div>
+            </div>
+            <div class="form-group">
+                <label for="regPassword">密码</label>
+                <input type="password" id="regPassword" placeholder="只能包含大小写字母和数字" />
+                <div class="hint">密码仅允许字母（a-z A-Z）和数字（0-9）</div>
+                <div class="error" id="passwordError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="channelSelect">选择内测频道</label>
+                <select id="channelSelect">
+                    <option value="windows">Windows 软件内测频道</option>
+                    <option value="lao6os">lao6 OS 软件 &amp; 系统内测频道</option>
+                </select>
+                <div class="hint">请根据您的需求选择对应的内测频道</div>
+            </div>
+
+            <div class="btn-center">
+                <button class="btn btn-success" id="registerBtn">设 置</button>
+            </div>
+            <div style="margin-top:12px; color:#718096; font-size:14px; text-align:center;" id="registerStatus"></div>
+        </div>
+        <div class="footer">
+            <div>已有账号？<a href="#" id="goToLoginLink">前往登录</a></div>
+        </div>
+    </div>
+
+    <div class="page" id="pageCopy">
+        <div class="header">
+            <h1>📋 注册完成</h1>
+            <div class="version">您的密码以通过哈希值加密，哈希值单不可逆，所以任何人无法知道您的密码</div>
+        </div>
+        <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+            <div class="info-text">
+                ✅ 设置完成！请将下方代码 <strong>复制并发送给 抖音-老六说电脑：
+            </div>
+            <div class="param-box" style="background:#f0f4f8; border-color:#4299e1;">
+                <span id="paramText" style="font-family: Consolas, monospace; word-break:break-all;"></span>
+                <br>
+                <button class="copy-btn" id="copyParamBtn">📋 复制</button>
+            </div>
+            <div class="btn-center">
+                <button class="btn btn-warning" id="finishBtn">✅ 完成</button>
+            </div>
+        </div>
+        <div class="footer">
+            <div>添加后请刷新登录页生效</div>
+        </div>
+    </div>
+
+    <div class="page" id="pageWelcome">
+        <div class="welcome-box">
+            <div class="emoji-big">🎉</div>
+            <h2>欢迎加入 lao6 OS 开发团队</h2>
+            <p>Windows 软件 内测频道</p>
+            <div class="btn-center">
+                <button class="btn" id="enterMainBtn">🚀 进入内测主页</button>
+            </div>
+        </div>
+        <div class="footer">
+            <div>感谢您的注册，期待您的参与！</div>
+        </div>
+    </div>
+
+</div>
+
+<script src="users.js"></script>
+
+<script>
+    async function sha256Hex(message) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(message);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+    }
+
+    const langZhBtn = document.getElementById('langZh');
+    const langEnBtn = document.getElementById('langEn');
+    const langHint = document.getElementById('langHint');
+    const backToLangBtn = document.getElementById('backToLang');
+
+    langZhBtn.addEventListener('click', function() {
+        showPage('pageLicense');
+        startCountdown();
+    });
+
+    langEnBtn.addEventListener('click', function() {
+        langHint.style.display = 'block';
+        langZhBtn.style.display = 'none';
+        langEnBtn.style.display = 'none';
+    });
+
+    backToLangBtn.addEventListener('click', function() {
+        langHint.style.display = 'none';
+        langZhBtn.style.display = 'inline-block';
+        langEnBtn.style.display = 'inline-block';
+    });
+
+    const agreeCheck = document.getElementById('agreeCheck');
+    const nextBtn = document.getElementById('nextToRegisterBtn');
+    const countdownDisplay = document.getElementById('countdownDisplay');
+
+    let countdown = 10;
+    let countdownInterval = null;
+
+    function startCountdown() {
+        countdown = 10;
+        nextBtn.disabled = true;
+        countdownDisplay.textContent = `（${countdown}s）`;
+        if (countdownInterval) clearInterval(countdownInterval);
+        countdownInterval = setInterval(function () {
+            countdown--;
+            if (countdown > 0) {
+                countdownDisplay.textContent = `（${countdown}s）`;
+            } else {
+                clearInterval(countdownInterval);
+                countdownInterval = null;
+                countdownDisplay.textContent = '';
+                if (agreeCheck.checked) nextBtn.disabled = false;
+            }
+        }, 1000);
+    }
+
+    agreeCheck.addEventListener('change', function () {
+        if (countdown > 0) {
+            nextBtn.disabled = true;
+            return;
+        }
+        nextBtn.disabled = !this.checked;
+    });
+
+    nextBtn.addEventListener('click', function () {
+        showPage('pageRegister');
+    });
+
+    const regUsername = document.getElementById('regUsername');
+    const regPassword = document.getElementById('regPassword');
+    const channelSelect = document.getElementById('channelSelect');
+    const usernameError = document.getElementById('usernameError');
+    const passwordError = document.getElementById('passwordError');
+    const registerStatus = document.getElementById('registerStatus');
+    const registerBtn = document.getElementById('registerBtn');
+
+    registerBtn.addEventListener('click', async function () {
+        usernameError.textContent = '';
+        passwordError.textContent = '';
+        registerStatus.textContent = '';
+
+        const channel = channelSelect.value;
+        if (channel === 'lao6os') {
+            alert('⚠️ 请前往 lao6os.com/betajoin 注册内测频道账户。');
+            return;
+        }
+
+        const username = regUsername.value.trim();
+        const password = regPassword.value;
+
+        if (!username) {
+            usernameError.textContent = '⚠️ 请输入用户名';
+            return;
+        }
+        if (username.length < 2) {
+            usernameError.textContent = '⚠️ 用户名至少2个字符';
+            return;
+        }
+
+        const passwordRegex = /^[A-Za-z0-9]+$/;
+        if (!password) {
+            passwordError.textContent = '⚠️ 请输入密码';
+            return;
+        }
+        if (!passwordRegex.test(password)) {
+            passwordError.textContent = '⚠️ 密码只能包含大小写字母和数字';
+            return;
+        }
+        if (password.length < 4) {
+            passwordError.textContent = '⚠️ 密码至少4个字符';
+            return;
+        }
+
+        const isExist = users.some(user => user.username === username);
+        if (isExist) {
+            usernameError.textContent = '⚠️ 该用户名已被使用，请重新取一个';
+            return;
+        }
+
+        let pwdHash;
+        try {
+            pwdHash = await sha256Hex(password);
+        } catch (e) {
+            registerStatus.textContent = '⚠️内容生成失败，请重试';
+            return;
+        }
+
+        const codeLine = `{ username: '${username}', pwdHash: '${pwdHash}' },`;
+        document.getElementById('paramText').textContent = codeLine;
+
+        showPage('pageCopy');
+        registerStatus.textContent = '';
+        regUsername.value = '';
+        regPassword.value = '';
+        channelSelect.value = 'windows';
+    });
+
+    document.getElementById('copyParamBtn').addEventListener('click', function () {
+        const text = document.getElementById('paramText').textContent;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(() => alert('✅ 已复制到剪贴板！'));
+        } else {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            alert('✅ 已复制到剪贴板！');
+        }
+    });
+
+    document.getElementById('finishBtn').addEventListener('click', function () {
+        showPage('pageWelcome');
+    });
+
+    document.getElementById('goToLoginLink').addEventListener('click', function (e) {
+        e.preventDefault();
+        window.location.href = 'index.html';
+    });
+
+    document.getElementById('enterMainBtn').addEventListener('click', function () {
+        window.location.href = 'https://douyin-lao6pc.github.io/beta';
+    });
+
+    console.log('✅ 注册页面加载完成，当前用户数：', users.length);
+</script>
+</body>
+</html>

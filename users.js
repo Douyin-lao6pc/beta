@@ -1,0 +1,4 @@
+
+const users = [
+    { username: 'lao6pc', pwdHash: '27a1db5d6b63f23477d8cb769554531a82340f8ed7ed1f1c534d6e17057300c9' },
+];
