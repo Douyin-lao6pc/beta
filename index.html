@@ -396,7 +396,8 @@
     //  状态：1=正在内测，2=已结束，3=已公开
     // ================================================================
     const tableData = [
-        { name: '-', status: 3, time: '-', link: '-', note: '-' },
+        { name: 'lao6-PE 1.7系列', status: 1, time: '2026/8/13-2026/8/22', link: 'Windows 软件内测频道', note: '-' },
+        { name: 'lao6-PE 1.7 services - International Edition', status: 1, time: '2026/8/13-2026/8/22', link: 'lao6 OS Beta channel', note: '-' },
         // ★ 在这里添加或删除产品行
     ];
 
@@ -474,7 +475,46 @@
     const displayUsername = document.getElementById('displayUsername');
     const downloadBtn = document.getElementById('downloadBtn');
 
-    // 检查是否已登录
+    // ================================================================
+    //  5. 邮箱验证工具
+    // ================================================================
+    function isValidEmail(email) {
+        return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
+    }
+
+    // ================================================================
+    //  6. 处理 email === '#' 的弹窗逻辑
+    // ================================================================
+    function handleEmailPlaceholder(user) {
+        // 如果 email === '#'，弹出选项让用户填写邮箱
+        if (user.email === '#') {
+            // 使用 confirm 询问是否填写
+            const wantToFill = confirm('您尚未填写用于接收内测动态的邮箱，是否添加？\n（用于接收内测频道通知）');
+            if (wantToFill) {
+                // 用户选择填写，弹出 prompt
+                const emailInput = prompt('请输入您的电子邮箱地址：');
+                if (emailInput !== null && emailInput.trim() !== '') {
+                    const trimmed = emailInput.trim();
+                    if (isValidEmail(trimmed)) {
+                        alert('✅ 邮箱格式正确！\n请联系抖音-老六说电脑，将电子邮箱号码发送。');
+                    } else {
+                        alert('❌ 邮箱格式不正确，请重新输入。\n请联系抖音-老六说电脑，将电子邮箱号码发送。');
+                    }
+                } else {
+                    // 用户取消或未输入
+                    alert('📢 请联系抖音-老六说电脑，说明您不想接收内测频道计划的通知。');
+                }
+            } else {
+                // 用户选择不填写
+                alert('📢 请联系抖音-老六说电脑，说明您不想接收内测频道计划的通知。');
+            }
+        }
+        // 如果 email === '*' 或是正常邮箱地址，不做任何操作
+    }
+
+    // ================================================================
+    //  7. 检查登录状态
+    // ================================================================
     function checkLoggedIn() {
         const saved = localStorage.getItem('lao6_logged_in');
         if (saved === 'true') {
@@ -482,6 +522,15 @@
             displayUsername.textContent = '👤 ' + user;
             showPage('dashboardPage');
             renderTable();
+
+            // 登录后检查该用户的 email 字段
+            const matchedUser = users.find(u => u.username === user);
+            if (matchedUser) {
+                // 延迟一点点执行，确保页面渲染完成
+                setTimeout(() => {
+                    handleEmailPlaceholder(matchedUser);
+                }, 300);
+            }
             return true;
         }
         return false;
@@ -511,10 +560,7 @@
         loginBtn.disabled = true;
 
         try {
-            // 计算输入密码的哈希
             const inputHash = await sha256Hex(password);
-
-            // ★ 在全局 users 数组中查找匹配的用户
             const matchedUser = users.find(user => user.username === username && user.pwdHash === inputHash);
 
             if (matchedUser) {
@@ -525,6 +571,11 @@
                 displayUsername.textContent = '👤 ' + username;
                 showPage('dashboardPage');
                 renderTable();
+
+                // 登录成功后检查 email 字段
+                setTimeout(() => {
+                    handleEmailPlaceholder(matchedUser);
+                }, 400);
             } else {
                 loginStatus.textContent = '❌ 用户名或密码错误';
                 loginStatus.className = 'login-status error';
@@ -548,7 +599,7 @@
     });
 
     // ================================================================
-    //  5. 退出登录
+    //  8. 退出登录
     // ================================================================
     document.getElementById('logoutBtn').addEventListener('click', function () {
         if (confirm('确定要退出登录吗？')) {
@@ -563,14 +614,14 @@
     });
 
     // ================================================================
-    //  6. 下载按钮
+    //  9. 下载按钮
     // ================================================================
     downloadBtn.addEventListener('click', function () {
         window.open('https://1812019632.share.123pan.cn/123pan/AH3rVv-ihvrh?pwd=ng8U', '_blank');
     });
 
     // ================================================================
-    //  7. 恢复用户名
+    //  10. 恢复用户名
     // ================================================================
     const savedUser = localStorage.getItem('lao6_username');
     if (savedUser && !localStorage.getItem('lao6_logged_in')) {

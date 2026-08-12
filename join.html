@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>lao6 OS Development Team Beta </title>
+    <title>lao6 OS Development Team Beta</title>
     <style type="text/css">
         * {
             margin: 0;
@@ -68,27 +68,22 @@
             color: #a0aec0;
             margin-top: 5px;
         }
-        .terms-list {
-            margin: 30px 0;
+        /* 许可协议内容样式 */
+        .terms-content {
+            margin: 20px 0;
             flex: 1;
+            overflow-y: auto;
+            max-height: 400px;
+            padding-right: 10px;
         }
-        .terms-list li {
-            margin-bottom: 20px;
-            padding-left: 25px;
-            position: relative;
-            list-style: none;
+        .terms-content p {
+            margin-bottom: 16px;
+            text-align: justify;
+            font-size: 14px;
+            line-height: 1.8;
         }
-        .terms-list li:before {
-            content: "•";
-            position: absolute;
-            left: 0;
-            color: #4299e1;
-            font-weight: bold;
-            font-size: 18px;
-        }
-        .highlight {
-            color: #e53e3e;
-            font-weight: 500;
+        .terms-content strong {
+            color: #2d3748;
         }
         .agree-area {
             margin: 20px 0 10px;
@@ -316,10 +311,39 @@
             background: #3182ce;
         }
 
+        /* 邮箱与勾选框区域分界线 */
+        .divider {
+            border: none;
+            border-top: 2px solid #e5e9ef;
+            margin: 20px 0;
+        }
+
+        .email-group {
+            transition: all 0.3s;
+        }
+        .email-group.hidden {
+            display: none;
+        }
+        .opt-out-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 15px;
+            cursor: pointer;
+            user-select: none;
+            color: #2d3748;
+            margin-top: 5px;
+        }
+        .opt-out-label input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
         @media (max-width: 768px) {
             .container { padding: 25px 15px; }
             .header h1 { font-size: 20px; }
-            .terms-list li { padding-left: 20px; }
+            .terms-content { max-height: 300px; }
             .param-box { font-size: 13px; padding: 14px 16px; }
             .welcome-box h2 { font-size: 24px; }
             .welcome-box p { font-size: 17px; }
@@ -332,6 +356,7 @@
 <body>
 <div class="container">
 
+    <!-- ===================== 语言选择页 ===================== -->
     <div class="page active" id="pageLanguage">
         <div class="header">
             <h1>🌐 选择语言 / Select Language</h1>
@@ -352,23 +377,70 @@
         </div>
     </div>
 
+    <!-- ===================== 许可协议页 ===================== -->
     <div class="page" id="pageLicense">
         <div class="header">
-            <h1>lao6 OS 开发团队 软件许可条款</h1>
-            <div class="version">许可版本：2.0-20250527</div>
-            <div class="producer">受许可条款的软件：所有 | 监制与共同编制：Microsoft Corporation</div>
+            <h1>软件内测用户许可协议</h1>
+            <div class="version">版本：3.0-20260812</div>
+            <div class="producer">lao6 OS 开发团队</div>
         </div>
-        <div class="terms-list">
-            <ul>
-                <li>不得对软件进行反向工程、反编译、反汇编；尽管由此限制，但如果法律明示允许上述活动，并仅在法律明示允许下从事上述活动则不限制。 
-                <li>您可以制作该软件的一个副本，仅可用于重新安装该软件，但绝不允许更改任何许可条款内容。</li>
-                <li>该软件按"原样"提供，我们为其提供大部分支持服务。</li>
-                <li>本协议以及您的补充、反馈和其他许可条款，共同构成了该程序的完整协议。</li>
-                <li>本协议规定了部分法律权利。根据您所在国家/地区的法律规定，您可能享有其他权利。您还可能享有与您的软件提供方相关的权利。若您所在国家/地区的法律不允许本协议改变您所在国家/地区法律赋予您的权利，则本协议将不改变您按照所在国家/地区的法律应享有的权利。</li>
-                <li>该软件按“原样”授予许可。您自行承担所有使用风险。lao6 OS开发团队不提供任何明示的担保、保证或条件。用户可享有其所在地法律赋予的本协议无法变更的其他消费者权利。</li>
-            </ul>
+        <div class="terms-content">
+            <p><strong>欢迎您参与 lao6 OS 开发团队的软件内测服务。</strong> 在参与内测之前，请您仔细阅读本《软件内测用户许可协议》（以下简称“本协议”）并充分理解本协议的全部约定，特别是以免除或限制责任条款。</p>
+
+            <p><strong>一、协议概述</strong><br>
+            本协议是您（或称“用户”，指获得本软件内测资格的用户）与 lao6 OS 开发团队（以下简称“我们”或“运营方”）之间关于您参与本软件内测活动所订立的协议。<br>
+            本协议自您点击“同意”或“确认”按钮（或其他确认同意的机制）之日起生效，有效期至本次内测活动结束之日止。</p>
+
+            <p><strong>二、内测活动说明</strong><br>
+            1. 内测目的：为了确保正式版本的良好体验，我们在版本内测阶段招募愿意遵守内测行为规范的用户参与内测。内测旨在让用户提前试用新功能，帮助研发团队发现和修复版本中的问题，共同将版本做得更加完善。<br>
+            2. 内测资格：您理解并同意，您同意本协议的内容并不表示我们一定会选择您参与测试活动，我们对测试参与人有最终的选择和决定权。<br>
+            3. 内测产品：本软件内测版本可能存在较多的 BUG 或错误，不代表正式发布版本的功能和所需使用环境。</p>
+
+            <p><strong>三、许可授予</strong><br>
+            我们在本协议项下授予您一项个人的、不可转让、非排他性的许可，您仅可为本协议项下的测试目的而使用本软件。<br>
+            本软件的全部权利、利益和所有权均属于并应继续属于我们或我们的合作伙伴所有。除本协议明确授予的权利之外，并未向您授予任何其他明示或暗示的权利。</p>
+
+            <p><strong>四、用户义务与行为规范</strong><br>
+            4.1 软件使用规范<br>
+            您不得从事以下行为：<br>
+            （1）删除本软件及其副本上关于著作权的信息；<br>
+            （2）对本软件进行反向工程、反向汇编、反向编译，或以其他方式尝试发现本软件的源代码；<br>
+            （3）对本软件进行出租、出借、复制、修改、链接、转载、汇编、发表、出版等；<br>
+            （4）通过非我们开发、授权的第三方软件、插件、外挂登录或使用本软件；<br>
+            4.2 内容管理规范<br>
+            您在使用本服务时不得从事以下行为：<br>
+            （1）发布、传送、传播违反国家法律法规、危害国家安全、公序良俗的内容；<br>
+            （2）发布、传送、传播侵害他人名誉权、肖像权、知识产权、商业秘密等合法权益的内容；<br>
+            （3）发表、传送、传播广告信息及垃圾信息；<br>
+            （4）其他违反法律法规、政策或侵犯第三方合法权益的行为。</p>
+
+            <p><strong>五、保密条款</strong><br>
+            1. 保密信息范围：以下信息为保密信息：<br>
+            &nbsp;&nbsp;&nbsp;• 本软件的安装包及任何相关文件；<br>
+            &nbsp;&nbsp;&nbsp;• 本软件内及与本软件相关的任何名称、类型、资料、数据；<br>
+            &nbsp;&nbsp;&nbsp;• 您参与内测的事实及内测相关沟通记录；<br>
+            &nbsp;&nbsp;&nbsp;• 我们向您披露的指定为保密或理应理解为机密的任何技术或商业信息。<br>
+            2. 保密义务：您不得向任何第三方披露保密信息。您应采取合理措施保护保密信息，这些措施至少应不低于您为保护自己的类似保密信息所采取的措施。<br>
+            3. 保密例外：以下信息不属于保密信息：<br>
+            &nbsp;&nbsp;&nbsp;• 非因您的过错而为公众普遍知悉的信息；<br>
+            &nbsp;&nbsp;&nbsp;• 我们在告知您之前您已知悉且无任何限制的信息；<br>
+            &nbsp;&nbsp;&nbsp;• 您从第三方合法获得且无使用或披露限制的信息。<br>
+            4. 违约后果：未经授权使用或披露保密信息将给我们造成无法弥补的伤害，我们有权立即寻求法律救济以禁止未经授权的使用或披露。</p>
+
+            <p><strong>六、免责声明</strong><br>
+            1. “按原样”提供：内测版本按“原样”提供，不提供任何明示、暗示、法定或其他性质的保证。我们特别声明不对适销性、特定用途的适用性及非侵权性作出任何暗示保证。<br>
+            2. 风险自负：内测版本可能存在不稳定、不兼容、未知 BUG 等问题。您使用内测版本须自行承担全部风险。<br>
+            3. 责任限制：在任何情况下，我们不对因使用或无法使用内测版本所导致的任何直接、间接、附带、特殊或继发性损害承担赔偿责任。</p>
+
+            <p><strong>七、数据收集与反馈</strong><br>
+            1. 反馈授权：您应按照我们的要求提供测试反馈，包括但不限于问卷、问题报告、建议等。您同意并特此将反馈内容的一切权利授予我们，我们有权不受限制地使用、复制、修改和以其他方式利用此类反馈。</p>
+
+            <p><strong>八、协议变更与终止</strong><br>
+            1. 协议变更：我们有权根据需要对本协议进行修订或变更。修订或变更后的协议将在相关渠道进行公示。<br>
+            2. 协议终止：如您违反本协议的相关规定，我们有权随时终止您的内测资格。内测活动结束后，本协议自动终止。</p>
         </div>
-        <!-- 同意区域 - 居中 -->
+
+        <!-- 同意区域 -->
         <div class="agree-area">
             <input type="checkbox" id="agreeCheck">
             <label for="agreeCheck">我同意以上许可条款</label>
@@ -379,30 +451,63 @@
             </button>
         </div>
         <div class="footer">
-            <div class="copyright">版权所有 © lao6 OS开发团队 & Microsoft Corporation</div>
-            <div>本许可条款受 Microsoft Corporation 管辖（若适用）</div>
+            <div class="copyright">版权所有 © lao6 OS 开发团队</div>
+            <div>本协议最终解释权归 lao6 OS 开发团队所有</div>
         </div>
     </div>
 
+    <!-- ===================== 注册页 ===================== -->
     <div class="page" id="pageRegister">
         <div class="header">
             <h1>🔐 新用户注册</h1>
             <div class="version">设置您的内测账号</div>
         </div>
         <div style="flex:1;">
+            <!-- 用户名 -->
             <div class="form-group">
                 <label for="regUsername">用户名</label>
                 <input type="text" id="regUsername" placeholder="请输入用户名（字母或数字，建议英文）" />
                 <div class="hint">用户名不能重复，请谨慎选择</div>
                 <div class="error" id="usernameError"></div>
             </div>
+            <!-- 密码 -->
             <div class="form-group">
                 <label for="regPassword">密码</label>
                 <input type="password" id="regPassword" placeholder="只能包含大小写字母和数字" />
                 <div class="hint">密码仅允许字母（a-z A-Z）和数字（0-9）</div>
                 <div class="error" id="passwordError"></div>
             </div>
+            <!-- 确认密码 -->
+            <div class="form-group">
+                <label for="regConfirmPassword">确认密码</label>
+                <input type="password" id="regConfirmPassword" placeholder="请再次输入密码" />
+                <div class="error" id="confirmPasswordError"></div>
+            </div>
 
+            <!-- 分界线：邮箱区域上方 -->
+            <hr class="divider" />
+
+            <!-- 邮箱输入 -->
+            <div class="form-group email-group" id="emailGroup">
+                <label for="regEmail">📧 电子邮箱</label>
+                <input type="email" id="regEmail" placeholder="请输入您的邮箱地址" />
+                <div class="hint">用于接收内测频道通知（可选）</div>
+                <div class="error" id="emailError"></div>
+            </div>
+
+            <!-- 不同意接收通知复选框 -->
+            <div class="form-group">
+                <label class="opt-out-label">
+                    <input type="checkbox" id="optOutCheck">
+                    本人不同意接收任何内测频道的动态信息
+                </label>
+                <div class="hint">勾选后将不会记录您的邮箱，且不会发送任何通知</div>
+            </div>
+
+            <!-- 分界线：勾选框下方 -->
+            <hr class="divider" />
+
+            <!-- 频道选择 -->
             <div class="form-group">
                 <label for="channelSelect">选择内测频道</label>
                 <select id="channelSelect">
@@ -422,6 +527,7 @@
         </div>
     </div>
 
+    <!-- ===================== 复制代码页 ===================== -->
     <div class="page" id="pageCopy">
         <div class="header">
             <h1>📋 注册完成</h1>
@@ -429,7 +535,7 @@
         </div>
         <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
             <div class="info-text">
-                ✅ 设置完成！请将下方代码 <strong>复制并发送给 抖音-老六说电脑：
+                ✅ 设置完成！请将下方代码 <strong>复制并发送给 抖音-老六说电脑：</strong>
             </div>
             <div class="param-box" style="background:#f0f4f8; border-color:#4299e1;">
                 <span id="paramText" style="font-family: Consolas, monospace; word-break:break-all;"></span>
@@ -445,6 +551,7 @@
         </div>
     </div>
 
+    <!-- ===================== 欢迎页 ===================== -->
     <div class="page" id="pageWelcome">
         <div class="welcome-box">
             <div class="emoji-big">🎉</div>
@@ -477,6 +584,7 @@
         document.getElementById(pageId).classList.add('active');
     }
 
+    // ========== 语言选择 ==========
     const langZhBtn = document.getElementById('langZh');
     const langEnBtn = document.getElementById('langEn');
     const langHint = document.getElementById('langHint');
@@ -499,6 +607,7 @@
         langEnBtn.style.display = 'inline-block';
     });
 
+    // ========== 许可协议倒计时 ==========
     const agreeCheck = document.getElementById('agreeCheck');
     const nextBtn = document.getElementById('nextToRegisterBtn');
     const countdownDisplay = document.getElementById('countdownDisplay');
@@ -536,17 +645,41 @@
         showPage('pageRegister');
     });
 
+    // ========== 注册逻辑 ==========
     const regUsername = document.getElementById('regUsername');
     const regPassword = document.getElementById('regPassword');
+    const regConfirmPassword = document.getElementById('regConfirmPassword');
+    const regEmail = document.getElementById('regEmail');
+    const optOutCheck = document.getElementById('optOutCheck');
+    const emailGroup = document.getElementById('emailGroup');
     const channelSelect = document.getElementById('channelSelect');
     const usernameError = document.getElementById('usernameError');
     const passwordError = document.getElementById('passwordError');
+    const confirmPasswordError = document.getElementById('confirmPasswordError');
+    const emailError = document.getElementById('emailError');
     const registerStatus = document.getElementById('registerStatus');
     const registerBtn = document.getElementById('registerBtn');
+
+    // 监听“不同意”复选框：显示/隐藏邮箱输入框
+    optOutCheck.addEventListener('change', function() {
+        if (this.checked) {
+            emailGroup.classList.add('hidden');
+            regEmail.value = '';
+            emailError.textContent = '';
+        } else {
+            emailGroup.classList.remove('hidden');
+        }
+    });
+
+    function isValidEmail(email) {
+        return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
+    }
 
     registerBtn.addEventListener('click', async function () {
         usernameError.textContent = '';
         passwordError.textContent = '';
+        confirmPasswordError.textContent = '';
+        emailError.textContent = '';
         registerStatus.textContent = '';
 
         const channel = channelSelect.value;
@@ -557,7 +690,10 @@
 
         const username = regUsername.value.trim();
         const password = regPassword.value;
+        const confirmPassword = regConfirmPassword.value;
+        let email = regEmail.value.trim();
 
+        // 用户名校验
         if (!username) {
             usernameError.textContent = '⚠️ 请输入用户名';
             return;
@@ -567,6 +703,7 @@
             return;
         }
 
+        // 密码校验
         const passwordRegex = /^[A-Za-z0-9]+$/;
         if (!password) {
             passwordError.textContent = '⚠️ 请输入密码';
@@ -581,6 +718,31 @@
             return;
         }
 
+        // 确认密码校验
+        if (!confirmPassword) {
+            confirmPasswordError.textContent = '⚠️ 请再次输入密码';
+            return;
+        }
+        if (password !== confirmPassword) {
+            confirmPasswordError.textContent = '⚠️ 两次输入的密码不一致';
+            return;
+        }
+
+        // 邮箱处理
+        if (optOutCheck.checked) {
+            email = '*';
+        } else {
+            if (!email) {
+                emailError.textContent = '⚠️ 请填写电子邮箱（或勾选“不同意接收通知”）';
+                return;
+            }
+            if (!isValidEmail(email)) {
+                emailError.textContent = '⚠️ 邮箱格式不正确，请重新输入';
+                return;
+            }
+        }
+
+        // 检查用户名是否已存在
         const isExist = users.some(user => user.username === username);
         if (isExist) {
             usernameError.textContent = '⚠️ 该用户名已被使用，请重新取一个';
@@ -591,17 +753,22 @@
         try {
             pwdHash = await sha256Hex(password);
         } catch (e) {
-            registerStatus.textContent = '⚠️内容生成失败，请重试';
+            registerStatus.textContent = '⚠️ 内容生成失败，请重试';
             return;
         }
 
-        const codeLine = `{ username: '${username}', pwdHash: '${pwdHash}' },`;
+        const codeLine = `{ username: '${username}', pwdHash: '${pwdHash}', email: '${email}' },`;
         document.getElementById('paramText').textContent = codeLine;
 
         showPage('pageCopy');
         registerStatus.textContent = '';
+        // 清空表单
         regUsername.value = '';
         regPassword.value = '';
+        regConfirmPassword.value = '';
+        regEmail.value = '';
+        optOutCheck.checked = false;
+        emailGroup.classList.remove('hidden');
         channelSelect.value = 'windows';
     });
 
