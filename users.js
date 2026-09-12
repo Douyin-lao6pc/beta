@@ -5,4 +5,5 @@ const users = [
     { username: '豆豆', pwdHash: '17ca7091a72b8a7aeeafdeb3cb18cf8f78c3ea7becf370db61dfd4ab52b2ea0d',email:"#" },
     { username: 'bshb1234', pwdHash: 'b69810027317e1f46462f2db02927893ff6992efccc7332fb1003a0dfdc7e46f',email:"#" },
     { username: '114514', pwdHash: 'a4c4dc6e2e716abe471313ec701e347ea5dc6bc66c285311424f81767a4d983f',email:"#" },
+    { username: 'DAMAO', pwdHash: '955ebb6f42d5988a33a8db0dc41bb698786411b11e11c414a3d0049aaf970f2d', email: '780659473@qq.com' },
 ];
